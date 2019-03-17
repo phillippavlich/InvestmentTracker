@@ -10,17 +10,16 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 public class obtainData {
+	Map AllData = new Hashtable();
 	public obtainData() {
-		initializeConnection();
-		
+	
+	
 	}
 	
-	public void initializeConnection() {
+	public Map grabStock(String ticker) {
 		Map dictionary = new Hashtable();
-		dictionary.put("lol", 6);
 		try {
-            
-            URL url = new URL("https://finance.yahoo.com/quote/AAPL?p=AAPL");
+            URL url = new URL("https://finance.yahoo.com/quote/"+ticker+"?p="+ticker);
              
             // read text returned by server
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -43,8 +42,6 @@ public class obtainData {
             			String Key=restLine.substring(0,index2-2);
             			String Value="";
             			
-            			//System.out.println("Key: "+ Key.toString());
-            			
             			Pattern p = Pattern.compile(">[1-9]{1}.*<");
             			Matcher matcher = p.matcher(restLine);
             		    int test2=matcher.find() ? matcher.start() : -1;
@@ -53,17 +50,14 @@ public class obtainData {
             				String reduced=restLine.substring(test2+1);
             				Value=reduced.substring(0,reduced.indexOf("<"));
             			}
-            			//System.out.println("Value: "+Value.toString());
-            			//System.out.println(restLine);
-            			dictionary.put(Key, Value);
             			
-            			//System.out.println(allData[i]);
+            			if(Value!="" && !Key.contains("ocator")&& !Key.contains("search-assist")) {
+            				dictionary.put(Key, Value);
+            			}
+            	
                 		
                 	}
                 }
-            	//if(line.contains("td")) {
-                	//System.out.println(line);
-                //}
             	
             }
             in.close();
@@ -76,15 +70,19 @@ public class obtainData {
             System.out.println("I/O Error: " + e.getMessage());
         }
 		
+		if(!dictionary.keySet().isEmpty()) {
+			AllData.put(ticker, dictionary);
+		}
+		else {
+			System.out.println("The ticker "+ticker+" that you entered does not exist!");
+		}
 		
-		for(Object key: dictionary.keySet())
-            System.out.println(key + ": " + dictionary.get(key));
-         
-		System.out.println("test");
-		
+		return dictionary;
 	}
 	
-	public int retrieveData() {
-		return 0;
+	public Map retrieveData() {
+		for(Object key: AllData.keySet())
+            System.out.println(key + ": " + AllData.get(key));
+		return AllData;
 	}
 }

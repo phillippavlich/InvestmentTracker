@@ -1,3 +1,4 @@
+import java.util.Map;
 
 public class InvestmentTracker {
 	static int status=0;
@@ -10,6 +11,9 @@ public class InvestmentTracker {
 	
 	public static void startApp() {
 		obtainData test=new obtainData();
+		Map enbridge=test.grabStock("ENB.TO");
+		Map apple=test.grabStock("AAPL");
+		Map apple2=test.grabStock("KKHHFF");
 		test.retrieveData();
 	}
 	
